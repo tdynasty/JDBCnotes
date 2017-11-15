@@ -1,0 +1,31 @@
+事务代码块：
+在mysql中可以用事务提交方式，在start transation中如果有一个代码出错，那么整块程序都不会执行，commit提交之后整个程序都会执行
+start transation
+
+
+commit
+
+在Java 中利用连接对象获得事务
+conn.setAutoCommit(false);
+ .
+ .
+ .
+conn.commit();
+
+conn.rollback();//手动事务回滚
+
+
+设置回滚点：如果程序出错，那么程序只运行回滚点的上一句代码。
+Savepoint sp=conn.setSavepoint();
+.
+.
+.
+conn.rollback(sp);
+conn.commit();
+
+
+事务的四大特性（ACID）:
+原子性（Atomicity）:事务中要么全部成功，要么全部失败
+一致性（Consistency）：相似于能量守恒，例如转账，转账1000元，再怎么转都是这1000元来回转
+隔离性（Islation）：每个并发访问的事务互相隔离，互不干扰
+持久性（Durability）：一旦事务被提交，那么数据库的改变是永久性的

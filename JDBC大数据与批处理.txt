@@ -1,0 +1,45 @@
+大数据：LOB(Large Object)
+LOB又分为:
+clob:用于存储大文本 在MySql中存储大文本用于Text 所以没有clob
+blob:用于存储二进制 例如 图像、声音、二进制文
+
+
+
+
+JDBC技术的批处理：
+Statement st=null;
+st=conn.createStatement();
+st.addBatch(sql1);
+st.addBatch(sql2);
+st.addBatch(sql3);
+
+st.executeBatch();
+st.clearBatch();//清掉预编译对象中的sql语句
+
+PreparedStatement是Statement的孩子，一般都是相同sql语句不同的参数。
+例：
+PreparedStatement st=null;
+
+String sql="insert into 表 values(?,?)";
+st=conn.prepareStatement(sql);
+for(int i=0;i<100;i++){
+	st.setString(1,"a"+i);
+	st.setString(2,"a"+i);
+st.addBatch();
+}
+st.executeBatch();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

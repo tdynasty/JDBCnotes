@@ -1,0 +1,84 @@
+首先创建一个产生数据库连接池的类：
+
+继承接口DataSource接口，创建类时点击Add选择javax.sql.DataSource接口，DataScource中有两个重载方法：getConnection()
+
+在类中创建：
+//定义一个链表模式的容器，用来装连接数据的连接对象
+static LinkedList<Connection> list=new LinkedList<Connection>();
+
+static{
+		try {
+			InputStream in=JDBCPool.class.getClassLoader().getResourceAsStream("db.properties");//读取资源文件
+			//模本代码
+			Properties pro=new Properties();
+			pro.load(in);
+			
+			String driver=pro.getProperty("driver");
+			String url=pro.getProperty("url");
+			String username=pro.getProperty("username");
+			String password=pro.getProperty("password");
+			
+			Class.forName(driver);//装载驱动
+			
+			for(int i=0;i<10;i++){//生成十个驱动到集合中
+				Connection conn=DriverManager.getConnection(url,username,password);
+				list.add(conn);
+			}
+
+在无参的方法中实现创建连接池：
+if(list.size()>0){
+			Connection conn=list.removeFirst();
+			return new MyConnection(conn,list);//返回一个增强类
+		}else{
+			throw new RuntimeException("对不起 数据库繁忙");
+		}
+
+//包装设计模式对对象conn增强
+	/**
+	 1、创建一个类实现 被增强的对象conn的接口 Connection
+	 2、定义变量 指向被增强的对象，就是记住外面的对象
+	 3、定义构造方法，接受被增强的对象
+	 4、重写想要增强的方法
+	 5、对于不想增强的方法 直接调用原来对象的方法
+	 */
+	class MyConnection implements Connection{
+		private Connection conn;
+		private List pool;
+		public MyConnection(Connection conn,List pool){
+			this.conn=conn;//this.得到的变量是这个类中定义的变量
+			this.pool=pool;
+		}
+		//想要重写的方法
+		@Override
+		public void close() throws SQLException {
+			pool.add(conn);
+		}
+	其余不增强的方法都调用被增强对象中的方法this.conn.......
+。
+。
+。
+。
+。
+。
+。
+。		
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
